@@ -13,3 +13,15 @@ When creating an alarm, the following properties can be specified:
 - `threshold`: The value to compare the metric value against.
 - `comparisonOperator`: The type of comparison that should be made between the metric value and the threshold value. Legal values include `GreaterThanOrEqualToThreshold`, `GreaterThanThreshold`, `LessThanThreshold`, and `LessThanOrEqualToThreshold`. 
 - `evaluationPeriods`: The number of periods over which data is compared to the specified threshold.
+
+### How Are AWS CloudWatch Alarms Evaluated?
+
+**Evaluation Periods and DatapointsToAlarm**
+
+There are three settings that control when an alarm goes off:
+
+- **Period** is the length of time over which the underlying metric is evaluated. The alarm period does not need to match the underlying metric period, but it needs to be at least as long as the metric period. CloudWatch will essentially generate one alarm data point per alarm period, based on the value(s) of the underlying metric during that period.
+- **Evaluation period** is the number of alarm periods (or alarm data points) to take into account when determining whether the alarm is triggered or not.
+- **DatapointsToAlarm** is the number of alarm data points that must breach the threshold during the evaluation period for the alarm to go off.
+
+For example, let’s assume that the alarm period is the same as the underlying metric period, the evaluation period is 3, and the DatapointsToAlarm is 2. For any 3 consecutive alarm data points, the alarm will go into the ALARM state if at least 2 out of 3 data points breach the alarm threshold. If for a given set of 3 consecutive alarm data points, only one or less breach the threshold, the alarm will not be in the ALARM state.
